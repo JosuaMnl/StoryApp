@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">StoryApp</string>
+    <string name="camera">Kamera</string>
+    <string name="gallery">Galeri</string>
+    <string name="image_preview">Pratinjau Gambar</string>
+    <string name="description_placeholder">Deskripsi</string>
+    <string name="add_story">Tambah</string>
+    <string name="image_detail">Detail Gambar</string>
+    <string name="description_detail">Deskripsi :</string>
+    <string name="btn_share">Bagikan</string>
+    <string name="add_story_button">Tombol Tambah Cerita</string>
+    <string name="welcome">Selamat Datang!</string>
+    <string name="welcome_description">Masuk untuk mulai berbagi cerita Anda dengan dunia.</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Masuk</string>
+    <string name="welcome_to_mystory">Selamat Datang di MyStory!</string>
+    <string name="let_s_share_your_story_with_the_world">Mari berbagi cerita Anda dengan dunia.</string>
+    <string name="login">Masuk</string>
+    <string name="register">Daftar</string>
+    <string name="_2023_mystory">© 2023 MyStory</string>
+    <string name="please_register_to_start_sharing_your_story_with_the_world">Silakan mendaftar untuk mulai berbagi cerita Anda dengan dunia.</string>
+    <string name="name">Nama</string>
+    <string name="sign_up">Daftar</string>
+    <string name="story_image">Gambar Cerita</string>
+    <string name="email_error">Masukkan alamat email yang benar!</string>
+    <string name="password_error">Password kurang dari 8 karakter!</string>
+    <string name="field_empty">Field ini tidak boleh kosong!</string>
+    <string name="login_success">Login Berhasil.</string>
+    <string name="login_failed">Login Gagal.</string>
+    <string name="register_success">Pendaftaran Berhasil.</string>
+    <string name="register_failed">Pendaftaran Gagal.</string>
+    <string name="register_exception">Pendaftaran Gagal | Email sudah terdaftar.</string>
+    <string name="upload_success">Upload berhasil.</string>
+    <string name="upload_failed">Upload gagal.</string>
+    <string name="access_camera">Tidak mendapatkan akses kamera!</string>
+    <string name="choose_picture">Pilih Gambar</string>
+    <string name="add_page">Tambah Story</string>
+    <string name="detail_page">Detail Story</string>
+    <string name="appwidget_text">DAFTAR STORY</string>
+    <string name="add_widget">Tambah widget</string>
+    <string name="app_widget_description">Ini adalah deskripsi widget</string>
+    <string name="no_data">TIDAK ADA DATA</string>
+</resources>
