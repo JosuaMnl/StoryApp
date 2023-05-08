@@ -41,10 +41,10 @@ data class Story(
     val createdAt: String,
 
     @field:SerializedName("lat")
-    val lat: Any,
+    val lat: Double,
 
     @field:SerializedName("lon")
-    val lon: Any,
+    val lon: Double,
 )
 
 data class RegisterResponse(

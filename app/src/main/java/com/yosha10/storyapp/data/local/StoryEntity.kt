@@ -23,5 +23,11 @@ class StoryEntity(
     val photoUrl: String,
 
     @field:ColumnInfo(name = "createdAt")
-    val createdAt: String
+    val createdAt: String,
+
+    @field:ColumnInfo(name = "lat", defaultValue = 0.toString())
+    val lat: Double,
+
+    @field:ColumnInfo(name = "lon", defaultValue = 0.toString())
+    val lon: Double
 ): Parcelable

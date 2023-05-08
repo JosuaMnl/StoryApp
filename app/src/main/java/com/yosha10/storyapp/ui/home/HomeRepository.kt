@@ -25,7 +25,9 @@ class HomeRepository private constructor(
                         story.name,
                         story.description,
                         story.photoUrl,
-                        story.createdAt
+                        story.createdAt,
+                        story.lat,
+                        story.lon
                     )
                 }
                 storyDao.insertStory(storyList)
