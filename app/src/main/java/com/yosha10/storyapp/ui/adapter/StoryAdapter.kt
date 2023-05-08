@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -14,7 +15,7 @@ import com.yosha10.storyapp.helper.DateFormatter
 import com.yosha10.storyapp.ui.adapter.StoryAdapter.MyViewHolder
 import com.yosha10.storyapp.ui.detail.DetailActivity
 
-class StoryAdapter: ListAdapter<StoryEntity, MyViewHolder>(DIFF_CALLBACK) {
+class StoryAdapter: PagingDataAdapter<StoryEntity, MyViewHolder>(DIFF_CALLBACK) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val binding = ItemStoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(binding)
@@ -22,7 +23,9 @@ class StoryAdapter: ListAdapter<StoryEntity, MyViewHolder>(DIFF_CALLBACK) {
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val story = getItem(position)
-        holder.bind(story)
+        if (story != null) {
+            holder.bind(story)
+        }
     }
 
     class MyViewHolder(private val binding: ItemStoryBinding): RecyclerView.ViewHolder(

@@ -9,7 +9,7 @@ object Injection {
     fun provideRepository(context: Context) : HomeRepository{
         val apiService = ApiConfig.getApiServiceWithHeaders(context)
         val database = StoryDatabase.getInstance(context)
-        val dao = database.storyDao()
-        return HomeRepository.getInstance(apiService, dao)
+//        val dao = database.storyDao()
+        return HomeRepository.getInstance(apiService, database)
     }
 }

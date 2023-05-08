@@ -16,6 +16,7 @@ import com.yosha10.storyapp.databinding.ActivityHomeBinding
 import com.yosha10.storyapp.helper.Result
 import com.yosha10.storyapp.helper.ViewModelFactory
 import com.yosha10.storyapp.pref.StoryPreference
+import com.yosha10.storyapp.ui.adapter.LoadingStateAdapter
 import com.yosha10.storyapp.ui.adapter.StoryAdapter
 import com.yosha10.storyapp.ui.add.AddActivity
 
@@ -55,7 +56,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.action_language -> startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
             R.id.action_logout -> {
                 viewModel?.clearToken()
@@ -69,7 +70,11 @@ class HomeActivity : AppCompatActivity() {
         storyAdapter = StoryAdapter()
         binding?.rvStory?.apply {
             this.layoutManager = LinearLayoutManager(this@HomeActivity)
-            adapter = storyAdapter
+            adapter = storyAdapter.withLoadStateFooter(
+                footer = LoadingStateAdapter {
+                    storyAdapter.retry()
+                }
+            )
         }
     }
 
@@ -83,24 +88,29 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setupGetAllStory() {
-        viewModel?.getAllStory()?.observe(this) { result ->
-            if (result != null) {
-                when (result) {
-                    is Result.Loading -> binding?.loading?.visibility = View.VISIBLE
-                    is Result.Success -> {
-                        binding?.loading?.visibility = View.GONE
-                        val storyData = result.data
-                        storyAdapter.submitList(storyData)
-                    }
-                    is Result.Error -> {
-                        binding?.loading?.visibility = View.GONE
-                        result.error.getContentIfNotHandled()?.let { msg ->
-                            Snackbar.make(window.decorView, msg, Snackbar.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-            }
+        viewModel?.story?.observe(this) {
+            binding?.loading?.visibility = View.VISIBLE
+            storyAdapter.submitData(lifecycle, it)
+            binding?.loading?.visibility = View.GONE
         }
+//        viewModel?.getAllStory()?.observe(this) { result ->
+//            if (result != null) {
+//                when (result) {
+//                    is Result.Loading -> binding?.loading?.visibility = View.VISIBLE
+//                    is Result.Success -> {
+//                        binding?.loading?.visibility = View.GONE
+//                        val storyData = result.data
+//                        storyAdapter.submitList(storyData)
+//                    }
+//                    is Result.Error -> {
+//                        binding?.loading?.visibility = View.GONE
+//                        result.error.getContentIfNotHandled()?.let { msg ->
+//                            Snackbar.make(window.decorView, msg, Snackbar.LENGTH_SHORT).show()
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 
     private fun setupBinding() {
