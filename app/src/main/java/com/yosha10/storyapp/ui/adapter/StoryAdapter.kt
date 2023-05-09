@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.yosha10.storyapp.R
 import com.yosha10.storyapp.data.local.StoryEntity
 import com.yosha10.storyapp.databinding.ItemStoryBinding
 import com.yosha10.storyapp.helper.DateFormatter
@@ -36,6 +37,7 @@ class StoryAdapter: PagingDataAdapter<StoryEntity, MyViewHolder>(DIFF_CALLBACK) 
             binding.tvItemCreatedAt.text = DateFormatter.formatDate(story.createdAt)
             Glide.with(itemView.context)
                 .load(story.photoUrl)
+                .placeholder(R.drawable.ic_image_placeholder)
                 .into(binding.ivItemPhoto)
             itemView.setOnClickListener {
                 val intent = Intent(it.context, DetailActivity::class.java)

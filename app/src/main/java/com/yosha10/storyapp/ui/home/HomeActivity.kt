@@ -9,11 +9,9 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import com.yosha10.storyapp.R
 import com.yosha10.storyapp.auth.login.dataStore
 import com.yosha10.storyapp.databinding.ActivityHomeBinding
-import com.yosha10.storyapp.helper.Result
 import com.yosha10.storyapp.helper.ViewModelFactory
 import com.yosha10.storyapp.pref.StoryPreference
 import com.yosha10.storyapp.ui.adapter.LoadingStateAdapter
@@ -46,6 +44,7 @@ class HomeActivity : AppCompatActivity() {
         setupGetAllStory()
     }
 
+    @Deprecated("Deprecated in Java", ReplaceWith("finishAffinity()"))
     override fun onBackPressed() {
         finishAffinity()
     }
@@ -88,29 +87,17 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setupGetAllStory() {
+//        binding?.loading?.visibility = View.VISIBLE
         viewModel?.story?.observe(this) {
-            binding?.loading?.visibility = View.VISIBLE
             storyAdapter.submitData(lifecycle, it)
-            binding?.loading?.visibility = View.GONE
+//            binding?.loading?.visibility = View.GONE
         }
-//        viewModel?.getAllStory()?.observe(this) { result ->
-//            if (result != null) {
-//                when (result) {
-//                    is Result.Loading -> binding?.loading?.visibility = View.VISIBLE
-//                    is Result.Success -> {
-//                        binding?.loading?.visibility = View.GONE
-//                        val storyData = result.data
-//                        storyAdapter.submitList(storyData)
-//                    }
-//                    is Result.Error -> {
-//                        binding?.loading?.visibility = View.GONE
-//                        result.error.getContentIfNotHandled()?.let { msg ->
-//                            Snackbar.make(window.decorView, msg, Snackbar.LENGTH_SHORT).show()
-//                        }
-//                    }
-//                }
-//            }
-//        }
+
+        viewModel?.loadingState?.observe(this){
+            it.getContentIfNotHandled()?.let {  isLoading ->
+                binding?.loading?.visibility = if (isLoading) View.VISIBLE else View.GONE
+            }
+        }
     }
 
     private fun setupBinding() {

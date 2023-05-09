@@ -1,6 +1,7 @@
 package com.yosha10.storyapp.ui.home
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import androidx.paging.*
@@ -14,38 +15,10 @@ import com.yosha10.storyapp.helper.Result
 
 class HomeRepository private constructor(
     private val apiService: ApiService,
-//    private val storyDao: StoryDao
     private val storyDatabase: StoryDatabase
 ){
-//    fun getAllStory(): LiveData<Result<List<StoryEntity>>> = liveData {
-//        emit(Result.Loading)
-//        try {
-//            val response = apiService.getAllStory()
-//            val story = response.listStory
-//            if (story != null) {
-//                val storyList = story.map { story ->
-//                    StoryEntity(
-//                        story.id,
-//                        story.name,
-//                        story.description,
-//                        story.photoUrl,
-//                        story.createdAt,
-//                        story.lat,
-//                        story.lon
-//                    )
-//                }
-//                storyDao.insertStory(storyList)
-//            } else {
-//                emit(Result.Error(Event("Data Story Kosong!")))
-//            }
-//        } catch (e: Exception){
-//            emit(Result.Error(Event(e.message.toString())))
-//        }
-//        val localData: LiveData<Result<List<StoryEntity>>> = storyDao.getStory().map { listStory ->
-//            Result.Success(listStory)
-//        }
-//        emitSource(localData)
-//    }
+    private val _loadingState = MutableLiveData<Event<Boolean>>()
+    val loadingState: LiveData<Event<Boolean>> get() =  _loadingState
 
     @OptIn(ExperimentalPagingApi::class)
     fun getStory(): LiveData<PagingData<StoryEntity>> {
@@ -57,7 +30,12 @@ class HomeRepository private constructor(
             pagingSourceFactory = {
                 storyDatabase.storyDao().getAllStory()
             }
-        ).liveData
+        ).liveData.map { pagingData ->  
+            _loadingState.postValue(Event(false))
+            pagingData
+        }.also {
+            _loadingState.postValue(Event(true))
+        }
     }
 
     companion object {
