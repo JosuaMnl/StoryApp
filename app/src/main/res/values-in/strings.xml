@@ -43,4 +43,9 @@
     <string name="app_widget_description">Ini adalah deskripsi widget</string>
     <string name="no_data">TIDAK ADA DATA</string>
     <string name="try_again">Coba Lagi</string>
+    <string name="title_activity_maps">Maps Story</string>
+    <string name="normal_type">Normal</string>
+    <string name="satellite_type">Satellite</string>
+    <string name="terrain_type">Terrain</string>
+    <string name="hybrid_type">Hybrid</string>
 </resources>

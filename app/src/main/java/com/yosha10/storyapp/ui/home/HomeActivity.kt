@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yosha10.storyapp.R
 import com.yosha10.storyapp.auth.login.dataStore
@@ -17,6 +18,7 @@ import com.yosha10.storyapp.pref.StoryPreference
 import com.yosha10.storyapp.ui.adapter.LoadingStateAdapter
 import com.yosha10.storyapp.ui.adapter.StoryAdapter
 import com.yosha10.storyapp.ui.add.AddActivity
+import com.yosha10.storyapp.ui.maps.MapsActivity
 
 class HomeActivity : AppCompatActivity() {
     private var _activityHomeBinding: ActivityHomeBinding? = null
@@ -50,12 +52,13 @@ class HomeActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater.inflate(R.menu.menu, menu)
+        menuInflater.inflate(R.menu.menu, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.action_maps -> startActivity(Intent(this@HomeActivity, MapsActivity::class.java))
             R.id.action_language -> startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
             R.id.action_logout -> {
                 viewModel?.clearToken()
@@ -87,16 +90,19 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setupGetAllStory() {
-//        binding?.loading?.visibility = View.VISIBLE
         viewModel?.story?.observe(this) {
             storyAdapter.submitData(lifecycle, it)
-//            binding?.loading?.visibility = View.GONE
         }
 
         viewModel?.loadingState?.observe(this){
             it.getContentIfNotHandled()?.let {  isLoading ->
                 binding?.loading?.visibility = if (isLoading) View.VISIBLE else View.GONE
             }
+        }
+
+        storyAdapter.addLoadStateListener { state ->
+            val isLoading = state.refresh is LoadState.Loading
+            viewModel?.setLoading(isLoading)
         }
     }
 

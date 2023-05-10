@@ -10,7 +10,7 @@ import androidx.room.Query
 @Dao
 interface StoryDao {
     @Query("SELECT * FROM story ORDER BY createdAt DESC")
-    fun getStory(): LiveData<List<StoryEntity>>
+    fun getStoryWithLocation(): List<StoryEntity>
 
     @Query("SELECT * FROM story ORDER BY createdAt DESC")
     fun getAllStory(): PagingSource<Int, StoryEntity>

@@ -12,6 +12,7 @@ import com.yosha10.storyapp.ui.add.AddViewModel
 import com.yosha10.storyapp.ui.home.HomeRepository
 import com.yosha10.storyapp.ui.home.HomeViewModel
 import com.yosha10.storyapp.ui.main.MainViewModel
+import com.yosha10.storyapp.ui.maps.MapsViewModel
 
 class ViewModelFactory private constructor(
         private val pref: StoryPreference,
@@ -32,6 +33,8 @@ class ViewModelFactory private constructor(
                 AddViewModel(context) as T
             modelClass.isAssignableFrom(RegisterViewModel::class.java) ->
                 RegisterViewModel(context) as T
+            modelClass.isAssignableFrom(MapsViewModel::class.java) ->
+                MapsViewModel(context) as T
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }
     }

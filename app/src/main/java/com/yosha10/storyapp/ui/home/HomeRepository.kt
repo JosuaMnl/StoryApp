@@ -17,8 +17,8 @@ class HomeRepository private constructor(
     private val apiService: ApiService,
     private val storyDatabase: StoryDatabase
 ){
-    private val _loadingState = MutableLiveData<Event<Boolean>>()
-    val loadingState: LiveData<Event<Boolean>> get() =  _loadingState
+//    private val _loadingState = MutableLiveData<Event<Boolean>>()
+//    val loadingState: LiveData<Event<Boolean>> get() =  _loadingState
 
     @OptIn(ExperimentalPagingApi::class)
     fun getStory(): LiveData<PagingData<StoryEntity>> {
@@ -30,12 +30,7 @@ class HomeRepository private constructor(
             pagingSourceFactory = {
                 storyDatabase.storyDao().getAllStory()
             }
-        ).liveData.map { pagingData ->  
-            _loadingState.postValue(Event(false))
-            pagingData
-        }.also {
-            _loadingState.postValue(Event(true))
-        }
+        ).liveData
     }
 
     companion object {

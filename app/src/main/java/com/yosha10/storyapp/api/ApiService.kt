@@ -30,7 +30,8 @@ interface ApiService {
     @GET("stories")
     suspend fun getStoryPaging(
         @Query("page") page: Int,
-        @Query("size") size: Int
+        @Query("size") size: Int,
+        @Query("location") location: Int
     ): StoryResponse
 
     @Multipart
