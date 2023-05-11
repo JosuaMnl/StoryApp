@@ -24,18 +24,5 @@ class MapsViewModel(context: Context): ViewModel() {
             val data = storyDatabase.storyDao().getStoryWithLocation()
             _storyLocationList.postValue(data)
         }
-
     }
-
-//    private val _storyLocationList = MutableLiveData<List<StoryEntity>>(emptyList())
-//
-//    val storyLocationList: LiveData<List<StoryEntity>> = _storyLocationList
-//
-//    private fun setData() {
-//        val storiesWithLocation: LiveData<List<StoryEntity>> = storyDatabase.storyDao().getStoryWithLocation()
-//        storiesWithLocation.observeForever { storyEntities ->
-//            _storyLocationList.postValue(storyEntities ?: emptyList())
-//        }
-//    }
-
 }

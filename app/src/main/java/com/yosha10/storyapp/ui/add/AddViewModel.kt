@@ -37,12 +37,12 @@ class AddViewModel(private val context: Context): ViewModel() {
         _fileImage.value = file
     }
 
-    fun postStory(image: MultipartBody.Part, description: RequestBody){
+    fun postStory(image: MultipartBody.Part, description: RequestBody, lat: Double, lon: Double){
         _isLoading.value = Event(true)
         viewModelScope.launch {
             try {
                 val apiService = ApiConfig.getApiServiceWithHeaders(context)
-                val uploadImageRequest = apiService.addStory(image, description)
+                val uploadImageRequest = apiService.addStory(image, description, lat, lon)
                 _isLoading.postValue(Event(false))
                 val error = uploadImageRequest.error
                 val message = uploadImageRequest.message

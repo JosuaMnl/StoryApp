@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
@@ -57,7 +58,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             isMapToolbarEnabled = true
         }
 
-        // Add a marker in Sydney and move the camera
         getLocation()
         getMyLocation()
         setCustomMapStyle()
@@ -93,15 +93,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         this.viewModel = viewModel
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     private fun getLocation(){
         viewModel?.storyLocationList?.observe(this){ listStoryLocation ->
             listStoryLocation?.forEach { storyLocation ->
@@ -126,7 +117,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 )
             }
         }
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

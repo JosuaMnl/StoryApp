@@ -48,4 +48,7 @@
     <string name="satellite_type">Satellite</string>
     <string name="terrain_type">Terrain</string>
     <string name="hybrid_type">Hybrid</string>
+    <string name="insert_picture">Silahkan ambil atau masukkan gambar terlebih dahulu!</string>
+    <string name="location_not_available">Tidak bisa mendapatkan lokasi. Coba lagi nanti.</string>
+    <string name="location_failed">Gagal mendapatkan lokasi.</string>
 </resources>

@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -18,6 +19,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.yosha10.storyapp.R
 import com.yosha10.storyapp.auth.login.dataStore
@@ -38,6 +41,9 @@ class AddActivity : AppCompatActivity() {
     private var _activityAddBinding: ActivityAddBinding? = null
     private val binding get() = _activityAddBinding
     private lateinit var currentPhotoPath: String
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private var lat: Double = 0.0
+    private var lon: Double = 0.0
 
     private var getFile: File? = null
     private var viewModel: AddViewModel? = null
@@ -48,6 +54,9 @@ class AddActivity : AppCompatActivity() {
         init()
         setupObserve()
         setupActionBar(getString(R.string.add_page))
+        setupButtonListener()
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         if (!allPermissionsGranted()) {
             ActivityCompat.requestPermissions(
@@ -56,7 +65,23 @@ class AddActivity : AppCompatActivity() {
                 REQUEST_CODE_PERMISSIONS
             )
         }
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _activityAddBinding = null
+    }
+
+    private fun init() {
+        val pref = StoryPreference.getInstance(dataStore)
+        val factory: ViewModelFactory = ViewModelFactory.getInstance(pref, applicationContext)
+        val viewModel: AddViewModel by viewModels {
+            factory
+        }
+        this.viewModel = viewModel
+    }
+
+    private fun setupButtonListener() {
         binding?.btnCamera?.setOnClickListener {
             startTakePhoto()
         }
@@ -66,25 +91,20 @@ class AddActivity : AppCompatActivity() {
         }
 
         binding?.buttonAdd?.setOnClickListener {
-            uploadImage()
+            uploadStory()
+        }
+
+        binding?.cbLocation?.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                getLastLocation()
+            } else {
+                lat = 0.0
+                lon = 0.0
+            }
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _activityAddBinding = null
-    }
-
-    private fun init(){
-        val pref = StoryPreference.getInstance(dataStore)
-        val factory: ViewModelFactory = ViewModelFactory.getInstance(pref, applicationContext)
-        val viewModel: AddViewModel by viewModels {
-            factory
-        }
-        this.viewModel = viewModel
-    }
-
-    private fun setupActionBar(title: String?){
+    private fun setupActionBar(title: String?) {
         supportActionBar?.apply {
             this.title = title
             setDisplayShowHomeEnabled(true)
@@ -92,25 +112,25 @@ class AddActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupBinding(){
+    private fun setupBinding() {
         _activityAddBinding = ActivityAddBinding.inflate(layoutInflater)
         setContentView(binding?.root)
     }
 
-    private fun setupObserve(){
-        viewModel?.isLoading?.observe(this){
+    private fun setupObserve() {
+        viewModel?.isLoading?.observe(this) {
             it.getContentIfNotHandled()?.let { isLoading ->
                 binding?.loading?.visibility = if (isLoading) View.VISIBLE else View.GONE
             }
         }
 
-        viewModel?.errorMessage?.observe(this){
+        viewModel?.errorMessage?.observe(this) {
             it.getContentIfNotHandled()?.let { msg ->
-                Snackbar.make(window.decorView.rootView,msg, Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(window.decorView.rootView, msg, Snackbar.LENGTH_SHORT).show()
             }
         }
 
-        viewModel?.statusAddStory?.observe(this){ success ->
+        viewModel?.statusAddStory?.observe(this) { success ->
             if (success || !success) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     finish()
@@ -118,7 +138,7 @@ class AddActivity : AppCompatActivity() {
             }
         }
 
-        viewModel?.imagePreview?.observe(this){ uri ->
+        viewModel?.imagePreview?.observe(this) { uri ->
             binding?.previewImage?.let {
                 Glide.with(this@AddActivity)
                     .load(uri)
@@ -126,31 +146,35 @@ class AddActivity : AppCompatActivity() {
             }
         }
 
-        viewModel?.fileImage?.observe(this){ file ->
+        viewModel?.fileImage?.observe(this) { file ->
             getFile = file
         }
     }
 
-    private fun uploadImage(){
-        if (getFile != null){
+    private fun uploadStory() {
+        if (getFile != null) {
             val file = reduceFileImage(getFile as File)
 
             val txtDescription = binding?.edAddDescription?.text?.toString()
-            val description = txtDescription?.toRequestBody("text/plain".toMediaType()) as RequestBody
+            val description =
+                txtDescription?.toRequestBody("text/plain".toMediaType()) as RequestBody
             val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
             val imageMultiPart: MultipartBody.Part = MultipartBody.Part.createFormData(
                 "photo",
                 file.name,
                 requestImageFile
             )
-            viewModel?.postStory(imageMultiPart, description)
-
+            viewModel?.postStory(imageMultiPart, description, lat, lon)
         } else {
-            Toast.makeText(this, "Silahkan ambil atau masukkan gambar terlebih dahulu!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                getString(R.string.insert_picture),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
-    private fun startTakePhoto(){
+    private fun startTakePhoto() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intent.resolveActivity(packageManager)
 
@@ -166,7 +190,7 @@ class AddActivity : AppCompatActivity() {
         }
     }
 
-    private fun startGallery(){
+    private fun startGallery() {
         val intent = Intent()
         intent.action = Intent.ACTION_GET_CONTENT
         intent.type = "image/*"
@@ -204,6 +228,46 @@ class AddActivity : AppCompatActivity() {
         }
     }
 
+    private fun getLastLocation() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        } else {
+            fusedLocationProviderClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    if (location != null) {
+                        lat = location.latitude
+                        lon = location.longitude
+                    } else {
+                        Toast.makeText(
+                            this,
+                            getString(R.string.location_not_available),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(
+                        this,
+                        getString(R.string.location_failed),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+        }
+    }
+
+    private val requestLocationPermission =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { granted ->
+            if (granted) {
+                getLastLocation()
+            }
+        }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -222,11 +286,11 @@ class AddActivity : AppCompatActivity() {
         }
     }
 
-    private fun setFileImage(file: File){
+    private fun setFileImage(file: File) {
         viewModel?.setFileImage(file)
     }
 
-    private fun setImagePreview(image: String){
+    private fun setImagePreview(image: String) {
         viewModel?.setImagePreview(image)
     }
 
