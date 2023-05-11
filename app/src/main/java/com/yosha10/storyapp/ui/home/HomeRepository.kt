@@ -1,9 +1,6 @@
 package com.yosha10.storyapp.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
+import androidx.lifecycle.*
 import androidx.paging.*
 import com.yosha10.storyapp.api.ApiService
 import com.yosha10.storyapp.data.local.StoryDao
@@ -12,14 +9,14 @@ import com.yosha10.storyapp.data.local.StoryEntity
 import com.yosha10.storyapp.data.paging.StoryRemoteMediator
 import com.yosha10.storyapp.helper.Event
 import com.yosha10.storyapp.helper.Result
+import com.yosha10.storyapp.pref.StoryPreference
+import kotlinx.coroutines.launch
 
 class HomeRepository private constructor(
     private val apiService: ApiService,
-    private val storyDatabase: StoryDatabase
-){
-//    private val _loadingState = MutableLiveData<Event<Boolean>>()
-//    val loadingState: LiveData<Event<Boolean>> get() =  _loadingState
-
+    private val storyDatabase: StoryDatabase,
+    private val pref: StoryPreference
+) {
     @OptIn(ExperimentalPagingApi::class)
     fun getStory(): LiveData<PagingData<StoryEntity>> {
         return Pager(
@@ -33,15 +30,20 @@ class HomeRepository private constructor(
         ).liveData
     }
 
+    suspend fun clearToken() {
+        pref.clearToken()
+    }
+
     companion object {
         @Volatile
         private var INSTANCE: HomeRepository? = null
         fun getInstance(
             apiService: ApiService,
-            storyDatabase: StoryDatabase
+            storyDatabase: StoryDatabase,
+            pref: StoryPreference
         ): HomeRepository =
             INSTANCE ?: synchronized(this) {
-                INSTANCE ?: HomeRepository(apiService, storyDatabase)
+                INSTANCE ?: HomeRepository(apiService, storyDatabase, pref)
             }.also { INSTANCE = it }
     }
 }

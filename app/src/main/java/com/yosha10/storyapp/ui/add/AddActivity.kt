@@ -111,11 +111,10 @@ class AddActivity : AppCompatActivity() {
         }
 
         viewModel?.statusAddStory?.observe(this){ success ->
-            if (success) {
+            if (success || !success) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     finish()
-                }, 1000)
-                finish()
+                }, 2000)
             }
         }
 

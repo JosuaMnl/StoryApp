@@ -28,7 +28,7 @@ class ViewModelFactory private constructor(
             modelClass.isAssignableFrom(MainViewModel::class.java) ->
                 MainViewModel(pref) as T
             modelClass.isAssignableFrom(HomeViewModel::class.java) ->
-                HomeViewModel(homeRepository, pref) as T
+                HomeViewModel(homeRepository) as T
             modelClass.isAssignableFrom(AddViewModel::class.java) ->
                 AddViewModel(context) as T
             modelClass.isAssignableFrom(RegisterViewModel::class.java) ->

@@ -44,7 +44,7 @@ class StoryRemoteMediator(
         }
 
         try {
-            val responseData = apiService.getStoryPaging(page, state.config.pageSize, 1).listStory
+            val responseData = apiService.getAllStory(page, state.config.pageSize, 0).listStory
 
             val endOfPaginationReached = responseData.isEmpty()
 

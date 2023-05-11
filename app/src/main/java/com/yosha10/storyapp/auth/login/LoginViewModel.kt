@@ -11,20 +11,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val pref: StoryPreference): ViewModel() {
+class LoginViewModel(private val pref: StoryPreference) : ViewModel() {
     private val _tokenLogin = MutableLiveData<String>()
     val tokenLogin: LiveData<String> = _tokenLogin
 
     private val _statusLogin = MutableLiveData<Event<Boolean>>()
     val statusLogin: LiveData<Event<Boolean>> = _statusLogin
 
-    private val _errorMessage = MutableLiveData<Event<String>>()
-    val errorMessage: LiveData<Event<String>> get() = _errorMessage
-
     private val _isLoading = MutableLiveData<Event<Boolean>>()
     val isLoading: LiveData<Event<Boolean>> get() = _isLoading
 
-    fun postLogin(email: String, password: String){
+    fun postLogin(email: String, password: String) {
         _isLoading.value = Event(true)
         viewModelScope.launch(Dispatchers.IO) {
             delay(500)
@@ -33,16 +30,15 @@ class LoginViewModel(private val pref: StoryPreference): ViewModel() {
                 _isLoading.postValue(Event(false))
                 val error = response.error
                 val token = response.loginResult.token
-                if (!error){
+                if (!error) {
                     _tokenLogin.postValue(token)
                     _statusLogin.postValue(Event(true))
                 } else {
                     _statusLogin.postValue(Event(false))
                 }
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 _isLoading.postValue(Event(false))
                 _statusLogin.postValue(Event(false))
-                _errorMessage.postValue(Event(e.message.toString()))
             }
         }
     }
