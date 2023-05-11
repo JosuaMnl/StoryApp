@@ -88,7 +88,9 @@ class FakeApiService : ApiService {
 
     override suspend fun addStory(
         file: MultipartBody.Part,
-        description: RequestBody
+        description: RequestBody,
+        lat: Double,
+        lon: Double
     ): AddStoryResponse {
         TODO("Not yet implemented")
     }

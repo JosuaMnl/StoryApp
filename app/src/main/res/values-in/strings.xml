@@ -51,4 +51,5 @@
     <string name="insert_picture">Silahkan ambil atau masukkan gambar terlebih dahulu!</string>
     <string name="location_not_available">Tidak bisa mendapatkan lokasi. Coba lagi nanti.</string>
     <string name="location_failed">Gagal mendapatkan lokasi.</string>
+    <string name="get_your_location">Dapatkan Lokasi Anda</string>
 </resources>

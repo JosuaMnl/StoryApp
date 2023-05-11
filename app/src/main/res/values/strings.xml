@@ -50,4 +50,5 @@
     <string name="insert_picture">Please take or enter a picture first!</string>
     <string name="location_not_available">Unable to get location. Please try again later.</string>
     <string name="location_failed">Failed to get location.</string>
+    <string name="get_your_location">Get Your Location</string>
 </resources>

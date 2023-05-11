@@ -110,7 +110,7 @@
         android:id="@+id/cb_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Get Your Location"
+        android:text="@string/get_your_location"
         app:layout_constraintBottom_toTopOf="@+id/button_add"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
